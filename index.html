@@ -3,7 +3,7 @@
     <head>
         <title>Local Development</title>
     
-        <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
+        <!-- <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script> -->
     
         <style>
           html,
@@ -23,14 +23,14 @@
             border: 1px solid red;
           }
         </style>
-      </head>
+      <script defer src="dist/main.js"></script></head>
     <body>
-        <h1>Hello!</h1>
+        <h1>Webpack! Webpack!</h1>
         <h2>Tip: Check your console</h2>
         <canvas id="babylon-canvas"></canvas>
     </body>
     
-    <script>
+    <!-- <script>
         if ("serviceWorker" in navigator) {
             window.addEventListener("load", () => {
                 navigator.serviceWorker
@@ -43,7 +43,7 @@
                     });
             });
         }
-    </script>
+    </script> -->
 
     <script src="/dist/main.js"></script>
 
