@@ -1,5 +1,8 @@
 # 🚀 Basic Babylon App
 
+## Babylon Playground
+* https://playground.babylonjs.com/#SV4O8F
+
 ## Installation
 * `npm install`
 
