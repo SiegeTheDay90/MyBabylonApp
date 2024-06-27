@@ -1,6 +1,6 @@
 // import * as BABYLON from "@babylonjs/core/Legacy/legacy";
 
-import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera";
+import { ArcRotateCamera } from "@babylonjs/core";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
@@ -20,7 +20,7 @@ const engine = new Engine(canvas);
 var scene = new Scene(engine);
 
 // This creates and positions a free camera (non-mesh)
-var camera = new FreeCamera("camera1", new Vector3(0, 5, -10), scene);
+// var camera = new FreeCamera("camera1", new Vector3(0, 5, -10), scene);
 
 // This targets the camera to scene origin
 // camera.setTarget(Vector3.Zero());
@@ -61,9 +61,10 @@ camera2.inputs.attached.keyboard.detachControl();
 
 canvas.addEventListener('keydown', (e) => {
   const key = e.key;
-  let vertical = sphere.position.subtractInPlace(camera2.position).normalize();
+  let vertical = camera2.getDirection(camera2.target).normalizeToNew();
   vertical.y = 0;
   let horizontal = new Vector3(vertical.z, 0, -vertical.x);
+  // debugger;
   switch(key){
     case "ArrowLeft":
       sphere.position.addInPlace(horizontal);
@@ -85,5 +86,8 @@ canvas.addEventListener('keydown', (e) => {
 
 // Render every frame
 engine.runRenderLoop(() => {
+  if(camera2.beta > Math.PI*5/14) camera2.beta = Math.PI*5/14;
+  if(camera2.beta < Math.PI*2/11) camera2.beta = Math.PI*2/11;
   scene.render();
+
 });
