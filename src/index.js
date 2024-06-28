@@ -59,7 +59,7 @@ camera2.inputs.attached.keyboard.detachControl();
 
 function moveWithCamera(vector){
   sphere.position.addInPlace(vector);
-  // camera2.target = sphere.position;
+  camera2.target = sphere.position;
 }
 
 canvas.addEventListener('keydown', (e) => {
