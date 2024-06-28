@@ -64,17 +64,17 @@ function moveWithCamera(vector){
 
 canvas.addEventListener('keydown', (e) => {
   const key = e.key;
-  let vertical = new Vector3(1, 0, 0);
+  let vertical = sphere.getDirection(camera2.position);
   vertical.y = 0;
   vertical.normalize();
-  let horizontal = new Vector3(0, 0, 1);
-  // debugger;
+  let horizontal = new Vector3(vertical.z, 0, -vertical.x);
+
   switch(key){
     case "ArrowLeft":
-      moveWithCamera(horizontal.negate());
+      moveWithCamera(horizontal);
       break;
       case "ArrowRight":
-      moveWithCamera(horizontal);
+      moveWithCamera(horizontal.negate());
       break;
     case "ArrowUp":
       moveWithCamera(vertical.negate());
