@@ -41,7 +41,7 @@ var material = new GridMaterial("grid", scene);
 var sphere = CreateSphere("sphere1", { segments: 16, diameter: 2 }, scene);
 
 // Move the sphere upward 1/2 its height
-sphere.position.y = 2;
+// sphere.position.y = 2;
 
 // Affect a material
 sphere.material = material;
@@ -52,37 +52,42 @@ var ground = CreateGround("ground1", { width: 25, height: 25, subdivisions: 4 },
 // Affect a material
 ground.material = material;
 
-var camera2 = new ArcRotateCamera("camera2", 1, Math.PI*3/7, 20, sphere, scene, true);
+var camera2 = new ArcRotateCamera("camera2", 0, Math.PI*3/7, 20, sphere.position, scene, true);
 camera2.attachControl(canvas,);
 camera2.inputs.attached.keyboard.detachControl();
 // scene.activeCamera = camera2;
 
-
+function moveWithCamera(vector){
+  sphere.position.addInPlace(vector);
+  // camera2.target = sphere.position;
+}
 
 canvas.addEventListener('keydown', (e) => {
   const key = e.key;
-  let vertical = camera2.getDirection(camera2.target).normalizeToNew();
+  let vertical = new Vector3(1, 0, 0);
   vertical.y = 0;
-  let horizontal = new Vector3(vertical.z, 0, -vertical.x);
+  vertical.normalize();
+  let horizontal = new Vector3(0, 0, 1);
   // debugger;
   switch(key){
     case "ArrowLeft":
-      sphere.position.addInPlace(horizontal);
+      moveWithCamera(horizontal.negate());
       break;
-    case "ArrowRight":
-      sphere.position.subtractInPlace(horizontal);
+      case "ArrowRight":
+      moveWithCamera(horizontal);
       break;
     case "ArrowUp":
-      sphere.position.subtractInPlace(vertical);
+      moveWithCamera(vertical.negate());
       break;
       case "ArrowDown":
-      sphere.position.addInPlace(vertical);
+      moveWithCamera(vertical);
       break;
     default:
       return;
   }
 })
 
+// debugger;
 
 // Render every frame
 engine.runRenderLoop(() => {
