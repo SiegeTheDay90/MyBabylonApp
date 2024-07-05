@@ -1,6 +1,6 @@
 // import * as BABYLON from "@babylonjs/core/Legacy/legacy";
 
-import { ArcRotateCamera } from "@babylonjs/core";
+import { ArcRotateCamera, MeshBuilder } from "@babylonjs/core";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
@@ -8,7 +8,7 @@ import { CreateGround } from "@babylonjs/core/Meshes/Builders/groundBuilder";
 import { CreateSphere } from "@babylonjs/core/Meshes/Builders/sphereBuilder";
 import { Scene } from "@babylonjs/core/scene";
 
-import { GridMaterial } from "@babylonjs/materials/grid/gridMaterial";
+import { GridMaterial, FireMaterial } from "@babylonjs/materials/";
 
 // Get the canvas element from the DOM.
 const canvas = document.getElementById("babylon-canvas");
@@ -52,7 +52,7 @@ var ground = CreateGround("ground1", { width: 25, height: 25, subdivisions: 4 },
 // Affect a material
 ground.material = material;
 
-var camera2 = new ArcRotateCamera("camera2", 0, Math.PI*3/7, 20, sphere.position, scene, true);
+var camera2 = new ArcRotateCamera("camera2", 0, Math.PI*3/7, 10, sphere.position, scene, true);
 camera2.attachControl(canvas,);
 camera2.inputs.attached.keyboard.detachControl();
 // scene.activeCamera = camera2;
@@ -60,21 +60,41 @@ camera2.inputs.attached.keyboard.detachControl();
 function moveWithCamera(vector){
   sphere.position.addInPlace(vector);
   camera2.target = sphere.position;
+  camera2.radius = 20;
 }
 
+let a = 0;
+canvas.addEventListener("click", (event) => {
+  var pickResult = scene.pick(scene.pointerX, scene.pointerY);
+
+  if (pickResult.hit) {
+    var pickedMesh = pickResult.pickedMesh; // The mesh that was picked
+    var pickedPoint = pickResult.pickedPoint; // The point on the mesh that was picked
+
+    if(pickedMesh.name === "ground1"){
+      sphere.position = pickedPoint;
+    }
+    console.log("Picked Mesh:", pickedMesh);
+    console.log("Picked Point:", pickedPoint);
+    
+    // You can add your own logic here, such as placing a marker at the picked point
+    var marker = BABYLON.MeshBuilder.CreateSphere("marker", {diameter: 0.1}, scene);
+    marker.position = pickedPoint;
+  }
+})
 canvas.addEventListener('keydown', (e) => {
   const key = e.key;
-  let vertical = sphere.getDirection(camera2.position);
-  vertical.y = 0;
-  vertical.normalize();
-  let horizontal = new Vector3(vertical.z, 0, -vertical.x);
+  let vertical = new Vector3(Math.cos(camera2.alpha), 0, Math.sin(camera2.alpha));
+  // vertical.y = 0;
+  // vertical.normalize();
+  let horizontal = new Vector3(Math.sin(camera2.alpha), 0, Math.cos(camera2.alpha));;
 
   switch(key){
     case "ArrowLeft":
-      moveWithCamera(horizontal);
-      break;
-      case "ArrowRight":
       moveWithCamera(horizontal.negate());
+      break;
+    case "ArrowRight":
+      moveWithCamera(horizontal);
       break;
     case "ArrowUp":
       moveWithCamera(vertical.negate());
