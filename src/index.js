@@ -1,6 +1,6 @@
 // import * as BABYLON from "@babylonjs/core/Legacy/legacy";
 
-import { ArcRotateCamera, MeshBuilder } from "@babylonjs/core";
+import { ArcRotateCamera, Color3, MeshBuilder } from "@babylonjs/core";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
@@ -35,7 +35,8 @@ var scene = new Scene(engine);
 // light.intensity = 0;
 
 // Create a grid material
-var material = new GridMaterial("grid", scene);
+var sphereMaterial = new GridMaterial("grid", scene);
+var groundMaterial = new GridMaterial("grid", scene);
 
 // Our built-in 'sphere' shape.
 var sphere = CreateSphere("sphere1", { segments: 16, diameter: 2 }, scene);
@@ -44,13 +45,13 @@ var sphere = CreateSphere("sphere1", { segments: 16, diameter: 2 }, scene);
 // sphere.position.y = 2;
 
 // Affect a material
-sphere.material = material;
-
+sphere.material = sphereMaterial;
+sphereMaterial.mainColor = new Color3(1, 0, 0);
 // Our built-in 'ground' shape.
 var ground = CreateGround("ground1", { width: 25, height: 25, subdivisions: 4 }, scene);
 
 // Affect a material
-ground.material = material;
+ground.material = groundMaterial;
 
 var camera2 = new ArcRotateCamera("camera2", 0, Math.PI*3/7, 10, sphere.position, scene, true);
 camera2.attachControl(canvas,);
@@ -60,10 +61,8 @@ camera2.inputs.attached.keyboard.detachControl();
 function moveWithCamera(vector){
   sphere.position.addInPlace(vector);
   camera2.target = sphere.position;
-  camera2.radius = 20;
 }
 
-let a = 0;
 canvas.addEventListener("click", (event) => {
   var pickResult = scene.pick(scene.pointerX, scene.pointerY);
 
@@ -113,6 +112,8 @@ canvas.addEventListener('keydown', (e) => {
 engine.runRenderLoop(() => {
   if(camera2.beta > Math.PI*5/14) camera2.beta = Math.PI*5/14;
   if(camera2.beta < Math.PI*2/11) camera2.beta = Math.PI*2/11;
+  if(camera2.radius < 5) camera2.radius = 5;
+  if(camera2.radius > 20) camera2.radius = 20;
   scene.render();
 
 });
